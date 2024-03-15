@@ -18,9 +18,33 @@ class Block(ABC):
     def __init__(self, type):
         super().__init__()        
         self.type = type
-        self.arr = [ [False, False, False, False] for _ in range(Block.Size) ]        
+        self.arr = [ [False, False, False, False] for _ in range(Block.Size) ]                
+    
+    def rotate_r(self, update=True):
+        temp = [ [False, False, False, False] for _ in range(Block.Size) ]        
+        
+        for r in range(Block.Size):
+            for c in range(Block.Size):
+                temp[c][Block.Size-1-r] = self.arr[r][c]
+                
+        if update:
+            self.arr = temp
+        return temp[:]
+    
+    def rotate_l(self, update=True):
+        temp = [ [False, False, False, False] for _ in range(Block.Size) ]        
+        
+        for r in range(Block.Size):
+            for c in range(Block.Size):
+                temp[Block.Size-1-c][r] = self.arr[r][c]
+                
+        if update:
+            self.arr = temp
+        return temp[:]
+        
         
     def print(self):
+        print('-'*Block.Size)
         for r in range(Block.Size):
             for c in range(Block.Size):
                 if self.arr[r][c]:
@@ -28,6 +52,7 @@ class Block(ABC):
                 else:
                     print('□', end='')
             print()
+        print('-'*Block.Size)
 
 class BO(Block):    
     def __init__(self):
