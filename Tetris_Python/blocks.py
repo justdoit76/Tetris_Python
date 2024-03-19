@@ -18,36 +18,23 @@ class Block(ABC):
     def __init__(self, type):
         super().__init__()        
         self.type = type
-        self.arr = [ [False, False, False, False] for _ in range(Block.Size) ]                
+        self.arr = []
+        self.idx = 0
     
-    def rotate_r(self, update=True):
-        temp = [ [False, False, False, False] for _ in range(Block.Size) ]        
+    def rotate_r(self):
+        size = len(self.arr)
         
-        for r in range(Block.Size):
-            for c in range(Block.Size):
-                temp[c][Block.Size-1-r] = self.arr[r][c]
-                
-        if update:
-            self.arr = temp
-        return temp[:]
+        
+        
     
-    def rotate_l(self, update=True):
-        temp = [ [False, False, False, False] for _ in range(Block.Size) ]        
+    def rotate_l(self):
+        pass        
         
+    def print(self):        
+        print('-'*Block.Size)            
         for r in range(Block.Size):
             for c in range(Block.Size):
-                temp[Block.Size-1-c][r] = self.arr[r][c]
-                
-        if update:
-            self.arr = temp
-        return temp[:]
-        
-        
-    def print(self):
-        print('-'*Block.Size)
-        for r in range(Block.Size):
-            for c in range(Block.Size):
-                if self.arr[r][c]:
+                if self.arr[self.idx][r][c]:
                     print('■', end='')
                 else:
                     print('□', end='')
@@ -57,52 +44,171 @@ class Block(ABC):
 class BO(Block):    
     def __init__(self):
         super().__init__(BType.O)
+        # 0
+        temp = [ [False, False, False, False] for _ in range(Block.Size) ]
         for r in range(1, 3):
             for c in range(1, 3):
-                self.arr[r][c] = True
+                temp = True
+        self.arr.append(temp)
 
 class BI(Block):    
     def __init__(self):
         super().__init__(BType.I)
+        # 0
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
         for c in range(Block.Size):            
-            self.arr[1][c] = True
+            temp[1][c] = True
+        self.arr.append(temp)
+        
+        # 1
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
+        for r in range(Block.Size):
+            temp[r][2] = True
+        self.arr.append(temp)            
+            
             
 class BS(Block):    
     def __init__(self):
-        super().__init__(BType.S)        
-        self.arr[1][2] = True
-        self.arr[1][3] = True
-        self.arr[2][1] = True
-        self.arr[2][2] = True
+        super().__init__(BType.S)    
+        # 0
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
+        temp[1][2] = True
+        temp[1][3] = True
+        temp[2][1] = True
+        temp[2][2] = True
+        self.arr.append(temp)
+        
+        # 1
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
+        temp[0][2] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        temp[2][3] = True
+        self.arr.append(temp)
         
 class BZ(Block):    
     def __init__(self):
-        super().__init__(BType.Z)        
-        self.arr[2][2] = True
-        self.arr[2][3] = True
-        self.arr[1][1] = True
-        self.arr[1][2] = True
+        super().__init__(BType.Z)     
+        # 0
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
+        temp[2][2] = True
+        temp[2][3] = True
+        temp[1][1] = True
+        temp[1][2] = True
+        self.arr.append(temp)
+        
+        # 1
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
+        temp[0][3] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        temp[2][2] = True
+        self.arr.append(temp)       
+
         
 class BL(Block):    
-    def __init__(self):
+    def __init__(self):        
         super().__init__(BType.L)        
-        self.arr[1][1] = True
-        self.arr[1][2] = True
-        self.arr[1][3] = True
-        self.arr[2][1] = True
+        # 0        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[1][1] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        temp[2][1] = True
+        self.arr.append(temp)
+        
+        # 1        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][2] = True
+        temp[1][2] = True
+        temp[2][2] = True
+        temp[2][3] = True
+        self.arr.append(temp)
+        
+        # 2        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][3] = True
+        temp[1][1] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        self.arr.append(temp)
+        
+        # 4        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][1] = True
+        temp[0][2] = True
+        temp[1][2] = True
+        temp[2][2] = True
+        self.arr.append(temp)
+
         
 class BJ(Block):    
     def __init__(self):
-        super().__init__(BType.J)        
-        self.arr[1][1] = True
-        self.arr[1][2] = True
-        self.arr[1][3] = True
-        self.arr[2][3] = True
+        super().__init__(BType.J)
+        # 0        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[1][1] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        temp[2][3] = True
+        self.arr.append(temp)
+        
+        # 1        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][2] = True
+        temp[0][3] = True
+        temp[1][2] = True
+        temp[2][2] = True
+        self.arr.append(temp)
+        
+        # 2        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][1] = True
+        temp[1][1] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        self.arr.append(temp)
+        
+        # 4        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][2] = True
+        temp[1][2] = True
+        temp[2][1] = True
+        temp[2][2] = True
+        self.arr.append(temp)
+        
         
 class BT(Block):    
     def __init__(self):
-        super().__init__(BType.T)        
-        self.arr[1][1] = True
-        self.arr[1][2] = True
-        self.arr[1][3] = True
-        self.arr[2][2] = True
+        super().__init__(BType.T)
+        # 0        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[1][1] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        temp[2][2] = True
+        self.arr.append(temp)
+        
+        # 1        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][2] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        temp[2][2] = True
+        self.arr.append(temp)
+        
+        # 2        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][2] = True
+        temp[1][1] = True
+        temp[1][2] = True
+        temp[1][3] = True
+        self.arr.append(temp)
+        
+        # 4        
+        temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
+        temp[0][2] = True
+        temp[1][1] = True
+        temp[1][2] = True
+        temp[2][2] = True
+        self.arr.append(temp)      
