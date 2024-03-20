@@ -24,11 +24,51 @@ class Block(ABC):
     def rotate_r(self):
         size = len(self.arr)
         
-        
-        
+        if self.idx>=size-1:
+            self.idx = 0
+        else:
+            self.idx += 1        
     
     def rotate_l(self):
-        pass        
+        size = len(self.arr)
+        
+        if self.idx<=0:
+            self.idx = size-1
+        else:
+            self.idx -= 1     
+
+    def findTail(self):
+        block = self.arr[self.idx]
+        U = self.findUpperTail(block)
+        D = self.findLowerTail(block)
+        L = self.findLeftTail(block)
+        R = self.findRightTail(block)
+        
+        return U, D, L, R
+        
+    def findUpperTail(self, block):        
+        for r in range(Block.Size):
+            for c in range(Block.Size):                            
+                if block[r][c]:
+                    return r
+                
+    def findLowerTail(self, block):        
+        for r in range(Block.Size-1, -1, -1):
+            for c in range(Block.Size):                            
+                if block[r][c]:
+                    return r
+                
+    def findLeftTail(self, block):        
+        for c in range(Block.Size):
+            for r in range(Block.Size):                            
+                if block[r][c]:
+                    return c
+                
+    def findRightTail(self, block):        
+        for c in range(Block.Size-1, -1, -1):
+            for r in range(Block.Size):                            
+                if block[r][c]:
+                    return c
         
     def print(self):        
         print('-'*Block.Size)            
@@ -48,7 +88,7 @@ class BO(Block):
         temp = [ [False, False, False, False] for _ in range(Block.Size) ]
         for r in range(1, 3):
             for c in range(1, 3):
-                temp = True
+                temp[r][c] = True
         self.arr.append(temp)
 
 class BI(Block):    
@@ -65,7 +105,6 @@ class BI(Block):
         for r in range(Block.Size):
             temp[r][2] = True
         self.arr.append(temp)            
-            
             
 class BS(Block):    
     def __init__(self):
@@ -104,7 +143,6 @@ class BZ(Block):
         temp[1][3] = True
         temp[2][2] = True
         self.arr.append(temp)       
-
         
 class BL(Block):    
     def __init__(self):        
@@ -140,7 +178,6 @@ class BL(Block):
         temp[1][2] = True
         temp[2][2] = True
         self.arr.append(temp)
-
         
 class BJ(Block):    
     def __init__(self):
@@ -176,7 +213,6 @@ class BJ(Block):
         temp[2][1] = True
         temp[2][2] = True
         self.arr.append(temp)
-        
         
 class BT(Block):    
     def __init__(self):

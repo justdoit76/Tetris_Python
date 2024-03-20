@@ -11,7 +11,7 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Ocean Coding School')
-        self.setFixedSize(400,800)
+        self.setFixedSize(440,840)
         self.tetris = Tetris(self)        
         
     def paintEvent(self, e) -> None:
