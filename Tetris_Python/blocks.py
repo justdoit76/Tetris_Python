@@ -19,7 +19,7 @@ class Block(ABC):
         super().__init__()        
         self.type = type
         self.arr = []
-        self.idx = 0
+        self.idx = 0        
     
     def rotate_r(self):
         size = len(self.arr)
@@ -84,6 +84,7 @@ class Block(ABC):
 class BO(Block):    
     def __init__(self):
         super().__init__(BType.O)
+        self.color = (255,255,0,255)
         # 0
         temp = [ [False, False, False, False] for _ in range(Block.Size) ]
         for r in range(1, 3):
@@ -94,6 +95,7 @@ class BO(Block):
 class BI(Block):    
     def __init__(self):
         super().__init__(BType.I)
+        self.color = (115,251,253,255)
         # 0
         temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
         for c in range(Block.Size):            
@@ -109,6 +111,7 @@ class BI(Block):
 class BS(Block):    
     def __init__(self):
         super().__init__(BType.S)    
+        self.color = (0,255,0,255)
         # 0
         temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
         temp[1][2] = True
@@ -128,6 +131,7 @@ class BS(Block):
 class BZ(Block):    
     def __init__(self):
         super().__init__(BType.Z)     
+        self.color = (0,255,0,255)
         # 0
         temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
         temp[2][2] = True
@@ -147,6 +151,7 @@ class BZ(Block):
 class BL(Block):    
     def __init__(self):        
         super().__init__(BType.L)        
+        self.color = (255,168,76,255)
         # 0        
         temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
         temp[1][1] = True
@@ -182,6 +187,7 @@ class BL(Block):
 class BJ(Block):    
     def __init__(self):
         super().__init__(BType.J)
+        self.color = (0,0,255,255)
         # 0        
         temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
         temp[1][1] = True
@@ -217,6 +223,7 @@ class BJ(Block):
 class BT(Block):    
     def __init__(self):
         super().__init__(BType.T)
+        self.color = (255,0,255,255)
         # 0        
         temp =  [ [False, False, False, False] for _ in range(Block.Size) ]        
         temp[1][1] = True
