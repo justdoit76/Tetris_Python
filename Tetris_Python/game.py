@@ -26,9 +26,9 @@ class Tetris(QObject):
         # create block
         self.initBlock()
         
-        # logical map
+        # logical map (0:None, 1:Move block, 2:Stacked block)
         self.before = []
-        self.maps = [[False for _ in range(Tetris.Col)] for _ in range(Tetris.Row)] 
+        self.maps = [[0 for _ in range(Tetris.Col)] for _ in range(Tetris.Row)] 
         
         # displayed map        
         self.rects = []
@@ -94,8 +94,9 @@ class Tetris(QObject):
                    
         for r in range(Tetris.Row):
             for c in range(Tetris.Col):
-                if self.maps[r][c]:
+                if self.maps[r][c]!=0:
                     qp.drawRect(self.rects[r][c])
+                    qp.drawText(self.rects[r][c], Qt.AlignCenter, f'{self.maps[r][c]}')
 
     def keyDown(self, key):
         if key==Qt.Key_Left:
@@ -125,14 +126,14 @@ class Tetris(QObject):
         
         # delete before blocks
         for r, c in self.before:
-            self.maps[r][c] = False
+            self.maps[r][c] = 0
         self.before.clear()
         
         for r in range(size):            
             for c in range(size):
                 if bl[size-1-r][c]:
                     if self.strow-r>=0:
-                        self.maps[self.strow-r][c+self.stcol]=True
+                        self.maps[self.strow-r][c+self.stcol]=1
                         # remember current blocks
                         self.before.append( (self.strow-r, c+self.stcol) )
                         
@@ -142,20 +143,32 @@ class Tetris(QObject):
         
         for r in range(size):            
             for c in range(size):
-                if bl[size-1-r][c]:
+                if bl[size-1-r][c]:                    
                     if self.strow - r + 1 > Tetris.Row-1:
                         self.before.clear()
-                        return False
-                    # elif self.strow-r>=1:
-                    #      if self.maps[self.strow-r+1][c+self.stcol]:
-                    #         return False
+                        return False                    
+                    elif self.strow-r >= 0:
+                        if self.maps[self.strow-r+1][c+self.stcol]==2:                            
+                            self.before.clear() 
+                            return False
         return True
+    
+    def stackBlock(self):
+        bl = self.block.arr[self.block.idx]
+        size = self.block.Size  
+        
+        for r in range(size):            
+            for c in range(size):
+                if bl[size-1-r][c]:                
+                    self.maps[self.strow-r][c+self.stcol]=2
+                
 
     def threadFunc(self):
         while self.run:             
             time.sleep(0.5)
             self.blockUpdate()
             if not self.isMoveDown():
+                self.stackBlock()
                 self.initBlock()
             
             self.strow+=1            
