@@ -213,16 +213,21 @@ class Tetris(QObject):
             for r in lines:
                 for c in range(Tetris.Col):
                     self.maps[r][c] = 0
-                self.update_signal.emit()
-                time.sleep(0.1)
                 
-            # fall blocks
-            h = len(lines)        
-            for r in range(lines[-1]-1, -1, -1):
-                for c in range(Tetris.Col):
-                    if self.maps[r][c]==2:
-                        self.maps[r-h][c] = 2
-                        self.maps[r][c] = 0            
+                self.update_signal.emit()
+                time.sleep(0.2)               
+                
+                # fall blocks                
+                for rr in range(r-1, -1, -1):
+                    for cc in range(Tetris.Col):
+                        if self.maps[rr][cc]==2:
+                            self.maps[rr+1][cc] = 2
+                            self.maps[rr][cc] = 0
+                            
+                            self.update_signal.emit()
+                            time.sleep(0.1)
+                time.sleep(0.2)               
+                
 
     def threadFunc(self):
         while self.run:                
