@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QRectF, QObject, pyqtSignal
 from PyQt5.QtGui import QBrush, QColor
 from blocks import BO,BI,BS,BZ,BL,BJ,BT, BType
-from threading import Thread
+from threading import Thread, Lock
 from random import randint
 import time
 
@@ -35,6 +35,7 @@ class Tetris(QObject):
         self.gameover_signal.connect(w.gameOver)
         
         # thread
+        self.cs = Lock()
         self.t = Thread(target = self.threadFunc)
         self.run = True
         self.t.start()   
@@ -96,13 +97,13 @@ class Tetris(QObject):
                 qp.drawLine(x+i*self.size, y, x3+i*self.size, y3)
     
     def drawBlock(self, qp):
-        R, G, B, A = self.block.color
-        b = QBrush(QColor(R,G,B,A))
                    
         for r in range(Tetris.Row):
             for c in range(Tetris.Col):
                 if self.maps[r][c]!=0:
                     if self.maps[r][c]==1:
+                        R, G, B, A = self.block.color
+                        b = QBrush(QColor(R,G,B,A))
                         qp.setBrush(b)
                     else:
                         R, G, B, A = self.cmaps[r][c]
@@ -130,8 +131,8 @@ class Tetris(QObject):
             self.block.rotate_r()
             self.blockUpdate()   
             self.block.print()
-        elif key==Qt.Key_Down:
-            if self.cy<Tetris.Row-1:
+        elif key==Qt.Key_Down:            
+            if self.cy-D<Tetris.Row-2:
                 self.cy+=1
                 self.blockUpdate()
         
@@ -207,11 +208,13 @@ class Tetris(QObject):
             if cnt == Tetris.Col:
                 lines.append(r)
                 
-        if lines:
+        if lines:            
             # remove line        
             for r in lines:
                 for c in range(Tetris.Col):
                     self.maps[r][c] = 0
+                self.update_signal.emit()
+                time.sleep(0.1)
                 
             # fall blocks
             h = len(lines)        
@@ -219,14 +222,15 @@ class Tetris(QObject):
                 for c in range(Tetris.Col):
                     if self.maps[r][c]==2:
                         self.maps[r-h][c] = 2
-                        self.maps[r][c] = 0
-        
+                        self.maps[r][c] = 0            
 
     def threadFunc(self):
-        while self.run:             
-            time.sleep(0.5)
+        while self.run:                
+            time.sleep(0.5)            
+            self.cs.acquire()
             if not self.blockUpdate():
                 self.gameover_signal.emit()
                 break
-            self.cy+=1                        
+            self.cy+=1       
+            self.cs.release()
         print('thread finished...')
