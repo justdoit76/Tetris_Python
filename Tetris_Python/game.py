@@ -116,6 +116,8 @@ class Tetris(QObject):
                 qp.drawText(self.rects[r][c], Qt.AlignCenter, f'{self.maps[r][c]}')
 
     def keyDown(self, key):
+        self.cs.acquire()
+        
         # find tail of blocks
         U, D, L, R = self.block.findTail()        
 
@@ -129,12 +131,17 @@ class Tetris(QObject):
                 self.blockUpdate()                
         elif key==Qt.Key_Up:
             self.block.rotate_r()
+            U, D, L, R = self.block.findTail()
+            if self.cx<0-L or self.cx>Tetris.Col-1-R:
+                self.block.rotate_l()
             self.blockUpdate()   
             self.block.print()
         elif key==Qt.Key_Down:            
             if self.cy-D<Tetris.Row-2:
                 self.cy+=1
                 self.blockUpdate()
+                
+        self.cs.release()
         
     def blockUpdate(self):
         bl = self.block.arr[self.block.idx]
@@ -230,12 +237,13 @@ class Tetris(QObject):
                 
 
     def threadFunc(self):
-        while self.run:                
-            time.sleep(0.5)            
+        while self.run:                            
             self.cs.acquire()
+            self.cy+=1       
             if not self.blockUpdate():
                 self.gameover_signal.emit()
                 break
-            self.cy+=1       
+            #self.cy+=1       
             self.cs.release()
+            time.sleep(0.5)            
         print('thread finished...')
