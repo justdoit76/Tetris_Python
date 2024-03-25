@@ -73,13 +73,7 @@ class Tetris(QObject):
         
     def draw(self, qp):
         self.drawBackground(qp)
-        self.drawBlock(qp)
-        
-        # for debug        
-        # b = QBrush(QColor(0,0,200))
-        # qp.setBrush(b)
-        # if self.cy>=0 and self.cy<Tetris.Row:
-        #     qp.drawEllipse(self.rects[self.cy][self.cx])        
+        self.drawBlock(qp)      
         
     def drawBackground(self, qp):
         x = self.inrect.left()        
@@ -96,8 +90,7 @@ class Tetris(QObject):
             if i<Tetris.Col+1:
                 qp.drawLine(x+i*self.size, y, x3+i*self.size, y3)
     
-    def drawBlock(self, qp):
-                   
+    def drawBlock(self, qp):                   
         for r in range(Tetris.Row):
             for c in range(Tetris.Col):
                 if self.maps[r][c]!=0:
@@ -122,17 +115,18 @@ class Tetris(QObject):
         U, D, L, R = self.block.findTail()        
 
         if key==Qt.Key_Left:
-            if self.cx>0-L:
+            if self.cx>0-L and self.isOverlapped(self.cx-1, self.cy)==False:
                 self.cx-=1
                 self.blockUpdate()                
         elif key==Qt.Key_Right:
-            if self.cx<Tetris.Col-1-R:
+            if self.cx<Tetris.Col-1-R and self.isOverlapped(self.cx+1, self.cy)==False:
                 self.cx+=1
                 self.blockUpdate()                
         elif key==Qt.Key_Up:
             self.block.rotate_r()
             U, D, L, R = self.block.findTail()
-            if self.cx<0-L or self.cx>Tetris.Col-1-R:
+            # block has rotated off the screen or overlapped other block
+            if (self.cx<0-L or self.cx>Tetris.Col-1-R) or self.isOverlapped(self.cx, self.cy):
                 self.block.rotate_l()
             self.blockUpdate()   
             self.block.print()
@@ -142,6 +136,15 @@ class Tetris(QObject):
                 self.blockUpdate()
                 
         self.cs.release()
+        
+    def isOverlapped(self, cx, cy):
+        U, D, L, R = self.block.findTail()
+        bl = self.block.arr[self.block.idx]
+        for r in range(U, D+1):
+            for c in range(L, R+1):
+                if bl[r][c] and self.maps[cy-r-1][c+cx]==2:
+                    return True
+        return False
         
     def blockUpdate(self):
         bl = self.block.arr[self.block.idx]
@@ -245,5 +248,6 @@ class Tetris(QObject):
                 break
             #self.cy+=1       
             self.cs.release()
+            print(self.cy, self.cx)
             time.sleep(0.5)            
         print('thread finished...')
