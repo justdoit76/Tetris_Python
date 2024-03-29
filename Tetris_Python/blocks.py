@@ -19,7 +19,7 @@ class Block(ABC):
         super().__init__()        
         self.type = type
         self.arr = []
-        self.idx = 0       
+        self.idx = 0        
      
     def rotate_r(self):
         size = len(self.arr)
@@ -131,7 +131,7 @@ class BS(Block):
 class BZ(Block):    
     def __init__(self):
         super().__init__(BType.Z)     
-        self.color = (0,255,0,255)
+        self.color = (255,0,0,255)
         # 0
         temp =  [ [False, False, False, False] for _ in range(Block.Size) ]
         temp[2][2] = True
